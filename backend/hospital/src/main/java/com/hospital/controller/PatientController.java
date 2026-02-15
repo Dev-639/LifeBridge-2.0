@@ -40,7 +40,6 @@ public class PatientController {
 		this.securityUtil = securityUtil;
 	}
 
-	// Public endpoint - No authentication required
 	@PostMapping("/register")
 	public ResponseEntity<?> registerPatient(@Valid @RequestBody PatientRegistrationRequest request) {
 		try {
@@ -54,7 +53,6 @@ public class PatientController {
 		}
 	}
 
-	// Admin only endpoint
 	@GetMapping("/fetchAllPatients")
 	public ResponseEntity<?> getAllPatientDetails() {
 		try {
@@ -74,14 +72,12 @@ public class PatientController {
 		}
 	}
 
-	// Endpoint accessible by both Admin and Patient (with proper authorization)
 	@GetMapping("/details/{email}")
 	public ResponseEntity<?> getPatientDetails(@PathVariable String email) {
 		try {
 			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 			UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
-			// Allow access if user is admin or if user is requesting their own details
 			if (!securityUtil.isAdmin(authentication) && !userDetails.getUsername().equals(email)) {
 				return ResponseEntity.status(HttpStatus.FORBIDDEN)
 						.body("Access denied. You can only view your own details.");
@@ -100,7 +96,6 @@ public class PatientController {
 		}
 	}
 
-	// Endpoint for patients to view their own details
 	@GetMapping("/mydetails")
 	public ResponseEntity<?> getMyDetails() {
 		try {
@@ -120,8 +115,6 @@ public class PatientController {
 		}
 	}
 
-	// Endpoint for updating patient details (accessible by both Admin and Patient
-	// with proper authorization)
 	@PutMapping("/update/{email}")
 	public ResponseEntity<?> updatePatient(@PathVariable String email,
 			@Valid @RequestBody PatientResponse updatedPatient) {
@@ -129,7 +122,6 @@ public class PatientController {
 			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 			UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
-			// Allow update if user is admin or if user is updating their own details
 			if (!securityUtil.isAdmin(authentication) && !userDetails.getUsername().equals(email)) {
 				return ResponseEntity.status(HttpStatus.FORBIDDEN)
 						.body("Access denied. You can only update your own details.");
@@ -152,7 +144,6 @@ public class PatientController {
 			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 			UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
-			// Allow delete if user is admin or if user is deleting their own details
 			if (!securityUtil.isAdmin(authentication) && !userDetails.getUsername().equals(email)) {
 				return ResponseEntity.status(HttpStatus.FORBIDDEN)
 						.body("Access denied. You can only delete your own details.");

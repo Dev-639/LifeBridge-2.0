@@ -38,12 +38,17 @@ public class SecurityConfig {
 		http.csrf(csrf -> csrf.disable()).cors(cors -> cors.configurationSource(corsConfigurationSource()))
 				.authorizeHttpRequests(authorizeRequests -> {
 					authorizeRequests
-							.requestMatchers("/", "/hospital/**", "/home", "/api/patients/register", "/api/login")
+							.requestMatchers("/", "/hospital/**", "/home", "/api/patients/register",
+									"/api/doctors/registerDoctor", "/api/login")
 							.permitAll().requestMatchers("/api/admin/**").hasAuthority("ROLE_ADMIN")
-							.requestMatchers("/api/doctor/**").hasAnyAuthority("ROLE_DOCTOR","ROLE_ADMIN")
+							.requestMatchers("/api/doctors/fetchAllDoctors")
+							.hasAnyAuthority("ROLE_PATIENT", "ROLE_ADMIN", "ROLE_DOCTOR")
+							.requestMatchers("/api/doctors/**").hasAnyAuthority("ROLE_DOCTOR", "ROLE_ADMIN")
 							.requestMatchers("/api/nurse/**").hasAuthority("ROLE_NURSE")
 							.requestMatchers("/api/staff/**").hasAuthority("ROLE_STAFF")
 							.requestMatchers("/api/patients/**").hasAnyAuthority("ROLE_PATIENT", "ROLE_ADMIN")
+							.requestMatchers("/api/appointments/**")
+							.hasAnyAuthority("ROLE_PATIENT", "ROLE_DOCTOR", "ROLE_ADMIN")
 							.anyRequest().authenticated();
 				}).exceptionHandling(
 						exception -> exception.authenticationEntryPoint((request, response, authException) -> {
@@ -79,10 +84,10 @@ public class SecurityConfig {
 	@Bean
 	public CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration configuration = new CorsConfiguration();
-		configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000")); // Frontend URL
+		configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
 		configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
 		configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
-		configuration.setAllowCredentials(true); // Allow session cookies
+		configuration.setAllowCredentials(true);
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		source.registerCorsConfiguration("/**", configuration);
 		return source;

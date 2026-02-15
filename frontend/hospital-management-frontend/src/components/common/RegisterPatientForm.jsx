@@ -11,16 +11,15 @@ import {
 } from "@mui/material";
 import { Person, Email, Phone, Lock } from "@mui/icons-material";
 
-const RegisterPatientForm = ({ 
-  patientData, 
-  errors, 
-  handleChange, 
-  handleSubmit 
+const RegisterPatientForm = ({
+  patientData,
+  errors,
+  handleChange,
+  handleSubmit
 }) => {
   return (
     <form onSubmit={handleSubmit}>
       <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
-        {/* First Name */}
         <TextField
           label="First Name"
           name="firstName"
@@ -34,7 +33,6 @@ const RegisterPatientForm = ({
           fullWidth
         />
 
-        {/* Last Name */}
         <TextField
           label="Last Name"
           name="lastName"
@@ -45,7 +43,6 @@ const RegisterPatientForm = ({
           fullWidth
         />
 
-        {/* Email */}
         <TextField
           label="Email"
           name="email"
@@ -59,7 +56,6 @@ const RegisterPatientForm = ({
           fullWidth
         />
 
-        {/* Phone Number */}
         <TextField
           label="Phone Number"
           name="phoneNumber"
@@ -73,7 +69,6 @@ const RegisterPatientForm = ({
           fullWidth
         />
 
-        {/* Gender */}
         <FormControl fullWidth error={!!errors.gender}>
           <InputLabel>Gender</InputLabel>
           <Select
@@ -90,7 +85,6 @@ const RegisterPatientForm = ({
           {errors.gender && <FormHelperText>{errors.gender}</FormHelperText>}
         </FormControl>
 
-        {/* Date of Birth */}
         <TextField
           type="date"
           name="dateOfBirth"
@@ -103,7 +97,6 @@ const RegisterPatientForm = ({
           helperText={errors.dateOfBirth}
         />
 
-        {/* Password */}
         <TextField
           label="Password"
           name="password"
@@ -118,7 +111,6 @@ const RegisterPatientForm = ({
           fullWidth
         />
 
-        {/* Submit Button */}
         <Button type="submit" variant="contained" color="primary" fullWidth>
           Register
         </Button>

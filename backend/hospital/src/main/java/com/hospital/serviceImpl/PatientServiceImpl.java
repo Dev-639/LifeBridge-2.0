@@ -28,7 +28,7 @@ public class PatientServiceImpl implements PatientService {
 	private PatientRepository patientRepository;
 
 	@Autowired
-	private UserService userService; // Injected UserService
+	private UserService userService;
 
 	@Override
 	public PatientResponse registerPatient(PatientRegistrationRequest request) {
@@ -37,20 +37,16 @@ public class PatientServiceImpl implements PatientService {
 		}
 
 		try {
-			// Step 1: Create User (Authentication Details)
 			User savedUser = userService.createUser(request.getEmail(), request.getPassword(), "PATIENT");
 
-			// Step 2: Save Patient (Profile Details)
 			Patient patient = new Patient();
 			BeanUtils.copyProperties(request, patient);
-			patient.setUserId(savedUser.getId()); // Link with userId
+			patient.setUserId(savedUser.getId());
 			Patient savedPatient = patientRepository.save(patient);
 
-			// Step 3: Return the Response using PatientMapper
 			return PatientMapper.toPatientResponse(savedPatient);
 
 		} catch (EmailAlreadyExistsException ex) {
-			// Handle custom exception for email already registered
 			throw new EmailAlreadyExistsException(
 					"The provided email is already registered. Please use a different email.");
 
@@ -85,7 +81,6 @@ public class PatientServiceImpl implements PatientService {
 
 		Patient patient = existingPatient.get();
 
-		// Update the patient details with new values, checking for null values
 		if (updatedPatient.getFirstName() != null) {
 			patient.setFirstName(updatedPatient.getFirstName());
 		}
@@ -111,30 +106,23 @@ public class PatientServiceImpl implements PatientService {
 			patient.setCountry(updatedPatient.getCountry());
 		}
 
-		// Save the updated patient details to the database (assuming you save it in
-		// your repository)
 		patientRepository.save(patient);
 
-		// Return the updated PatientResponse using a mapper to convert the entity to a
-		// DTO
 		return PatientMapper.toPatientResponse(patient);
 	}
 
 	@Transactional
 	public boolean deletePatient(String email) {
-		// Check if the patient exists by email
 		Optional<Patient> optionalPatient = patientRepository.findByEmail(email);
 
 		if (optionalPatient.isEmpty()) {
-			// Patient with the provided email does not exist
-			return false; // Return false indicating patient not found
+			return false;
 		}
 
-		// Delete the patient from the repository
 		Patient patientToDelete = optionalPatient.get();
 		patientRepository.delete(patientToDelete);
 
-		return true; // Return true indicating successful deletion
+		return true;
 	}
 
 }

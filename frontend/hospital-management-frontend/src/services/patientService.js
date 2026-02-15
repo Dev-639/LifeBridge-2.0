@@ -1,34 +1,27 @@
 import axiosInstance from "../api/axiosConfig";
 
-// Register a new patient
 export const registerPatient = async (patientData) => {
   try {
     const response = await axiosInstance.post('api/patients/register', patientData);
-    return response.data; // On successful registration
+    return response.data;
   } catch (error) {
-    
 
     if (error.response) {
-      // Structured error response from the server
       const errorData = error.response.data;
 
-      // Check if the error message is related to email already existing
       if (errorData === "Email is already registered.") {
         throw new Error("Email is already registered");
       } else {
         throw new Error(errorData.message || 'An unknown error occurred during registration');
       }
     } else if (error.request) {
-      // Network error or no response from server
       throw new Error('No response from server. Please check your network connection.');
     } else {
-      // Other types of errors (like config errors)
       throw new Error(error.message || 'An error occurred during registration');
     }
   }
 };
 
-// Update existing patient details
 export const updatePatient = async (email, patientData) => {
   try {
     const response = await axiosInstance.put(`api/patients/update/${email}`, patientData);
@@ -40,17 +33,16 @@ export const updatePatient = async (email, patientData) => {
 
 export const fetchPatientDetails = async () => {
   try {
-    const response = await axiosInstance.get("/api/patients/mydetails");
+    const response = await axiosInstance.get("api/patients/mydetails");
     return response.data;
   } catch (error) {
     throw error;
   }
 };
 
-// Fetch patient details by email
 export const fetchPatientByEmail = async (email) => {
   try {
-    const response = await axiosInstance.get(`/patients/email/${email}`);
+    const response = await axiosInstance.get(`api/patients/email/${email}`);
     return response.data;
   } catch (error) {
     console.error("Error fetching patient by email:", error);
@@ -66,10 +58,9 @@ export const fetchPatientByEmail = async (email) => {
   }
 };
 
-// Fetch all patients
 export const fetchAllPatients = async () => {
   try {
-    const response = await axiosInstance.get('/api/patients/fetchAllPatients');
+    const response = await axiosInstance.get('api/patients/fetchAllPatients');
     return response.data;
   } catch (error) {
     console.error("Error fetching all patients:", error);
@@ -87,7 +78,7 @@ export const fetchAllPatients = async () => {
 
 export const deletePatient = async (email) => {
   try {
-    const response = await axiosInstance.delete(`api/patients/delete${email}`);
+    const response = await axiosInstance.delete(`api/patients/delete/${email}`);
     return response.data;
   } catch (error) {
     throw error;

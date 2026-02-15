@@ -36,7 +36,7 @@ function ViewDoctorTable() {
   const [formMode, setFormMode] = useState("add");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  
+
   const [currentDoctor, setCurrentDoctor] = useState({
     firstName: "",
     lastName: "",
@@ -69,10 +69,9 @@ function ViewDoctorTable() {
     "General Medicine",
   ];
 
-  // Validation function
   const validateDoctorForm = () => {
     const errors = {};
-    
+
     if (!currentDoctor.firstName) errors.firstName = "First name is required";
     if (!currentDoctor.lastName) errors.lastName = "Last name is required";
     if (!currentDoctor.email) errors.email = "Email is required";
@@ -95,7 +94,6 @@ function ViewDoctorTable() {
     return true;
   };
 
-  // Handle pagination
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -105,7 +103,6 @@ function ViewDoctorTable() {
     setPage(0);
   };
 
-  // Fetch doctors on component mount
   useEffect(() => {
     const loadDoctors = async () => {
       try {
@@ -120,7 +117,6 @@ function ViewDoctorTable() {
     loadDoctors();
   }, []);
 
-  // Search functionality
   const handleSearchChange = (e) => {
     const value = e.target.value.toLowerCase();
     setSearchTerm(value);
@@ -134,7 +130,6 @@ function ViewDoctorTable() {
     setFilteredDoctors(filtered);
   };
 
-  // Modal handlers
   const handleOpenModal = (mode, doctor = null) => {
     setFormMode(mode);
     if (mode === "edit" && doctor) {
@@ -176,7 +171,6 @@ function ViewDoctorTable() {
     }));
   };
 
-  // Submit handler
   const handleSubmit = async () => {
     if (!validateDoctorForm()) return;
 
@@ -189,7 +183,6 @@ function ViewDoctorTable() {
         setSuccessMessage("Doctor updated successfully!");
       }
 
-      // Refresh the doctors list
       const updatedDoctors = await fetchAllDoctors();
       setDoctors(updatedDoctors);
       setFilteredDoctors(updatedDoctors);
@@ -201,7 +194,6 @@ function ViewDoctorTable() {
     }
   };
 
-  // Delete handler
   const handleDeleteDoctor = async (email) => {
     if (window.confirm("Are you sure you want to delete this doctor?")) {
       try {
@@ -222,7 +214,6 @@ function ViewDoctorTable() {
     <div className="mt-5">
       <h4>Doctor Details</h4>
 
-      {/* Search Field */}
       <TextField
         label="Search by name, email, or specialization"
         variant="outlined"
@@ -235,7 +226,6 @@ function ViewDoctorTable() {
         style={{ marginBottom: "20px" }}
       />
 
-      {/* Add Doctor Button */}
       <Button
         variant="contained"
         color="primary"
@@ -245,7 +235,6 @@ function ViewDoctorTable() {
         Add Doctor
       </Button>
 
-      {/* Doctor Table */}
       <TableContainer>
         <Table sx={{ minWidth: 800 }} aria-label="doctor table">
           <TableHead>
@@ -296,7 +285,6 @@ function ViewDoctorTable() {
         </Table>
       </TableContainer>
 
-      {/* Pagination */}
       <TablePagination
         rowsPerPageOptions={[5, 10, 25]}
         component="div"
@@ -307,7 +295,6 @@ function ViewDoctorTable() {
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
 
-      {/* Add/Edit Doctor Modal */}
       <Dialog open={showModal} onClose={handleCloseModal} maxWidth="md" fullWidth>
         <DialogTitle>
           {formMode === "add" ? "Add New Doctor" : "Edit Doctor"}
@@ -321,10 +308,10 @@ function ViewDoctorTable() {
             fullWidth
             margin="normal"
           />
-           <TextField
+          <TextField
             label="Last Name"
             name="lastName"
-            value={currentPatient.lastName}
+            value={currentDoctor.lastName}
             onChange={handleInputChange}
             fullWidth
             margin="normal"
@@ -332,7 +319,7 @@ function ViewDoctorTable() {
           <TextField
             label="Email"
             name="email"
-            value={currentPatient.email}
+            value={currentDoctor.email}
             onChange={handleInputChange}
             fullWidth
             margin="normal"
@@ -341,7 +328,7 @@ function ViewDoctorTable() {
           <TextField
             label="Phone Number"
             name="phoneNumber"
-            value={currentPatient.phoneNumber}
+            value={currentDoctor.phoneNumber}
             onChange={handleInputChange}
             fullWidth
             margin="normal"
@@ -349,7 +336,7 @@ function ViewDoctorTable() {
           <TextField
             label="Gender"
             name="gender"
-            value={currentPatient.gender}
+            value={currentDoctor.gender}
             onChange={handleInputChange}
             fullWidth
             margin="normal"
@@ -357,7 +344,7 @@ function ViewDoctorTable() {
           <TextField
             label="Date of Birth"
             name="dateOfBirth"
-            value={currentPatient.dateOfBirth}
+            value={currentDoctor.dateOfBirth}
             onChange={handleInputChange}
             fullWidth
             margin="normal"
@@ -365,7 +352,7 @@ function ViewDoctorTable() {
           <TextField
             label="City"
             name="city"
-            value={currentPatient.city}
+            value={currentDoctor.city}
             onChange={handleInputChange}
             fullWidth
             margin="normal"
@@ -373,7 +360,7 @@ function ViewDoctorTable() {
           <TextField
             label="State"
             name="state"
-            value={currentPatient.state}
+            value={currentDoctor.state}
             onChange={handleInputChange}
             fullWidth
             margin="normal"
@@ -381,7 +368,7 @@ function ViewDoctorTable() {
           <TextField
             label="Country"
             name="country"
-            value={currentPatient.country}
+            value={currentDoctor.country}
             onChange={handleInputChange}
             fullWidth
             margin="normal"
@@ -391,15 +378,13 @@ function ViewDoctorTable() {
               label="Password"
               name="password"
               type="password"
-              value={currentPatient.password}
+              value={currentDoctor.password}
               onChange={handleInputChange}
               fullWidth
               margin="normal"
             />
           )}
-          {/* ... Other basic fields similar to patient form ... */}
 
-          {/* Doctor-specific fields */}
           <Select
             label="Specialization"
             name="specialization"
@@ -452,7 +437,6 @@ function ViewDoctorTable() {
         </DialogActions>
       </Dialog>
 
-      {/* Success and Error Snackbars */}
       <Snackbar
         open={showSuccess}
         autoHideDuration={6000}

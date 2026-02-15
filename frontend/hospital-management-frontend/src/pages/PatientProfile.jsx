@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   AppBar,
   Box,
@@ -34,8 +34,7 @@ function PatientProfile() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  // Fetch patient data from the backend using the service function
-  const getPatientData = async () => {
+  const getPatientData = useCallback(async () => {
     try {
       const data = await fetchPatientDetails();
       setUserData(data);
@@ -46,12 +45,11 @@ function PatientProfile() {
       sessionStorage.clear();
       navigate("/LifeBridgeHospital/login");
     }
-  };
+  }, [navigate]);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-useEffect(() => {
-  getPatientData();
-}, []);
+  useEffect(() => {
+    getPatientData();
+  }, [getPatientData]);
 
 
   const handleSidebarClick = (component) => {
@@ -64,7 +62,6 @@ useEffect(() => {
   return (
     <div>
       <CssBaseline />
-      {/* Top Navbar */}
       <AppBar position="sticky">
         <Toolbar>
           <Typography variant="h6" sx={{ flexGrow: 1 }}>
@@ -90,9 +87,7 @@ useEffect(() => {
         </Toolbar>
       </AppBar>
 
-      {/* Sidebar and Main Content Layout */}
       <Box sx={{ display: "flex" }}>
-        {/* Sidebar */}
         <Drawer
           variant="permanent"
           sx={{
@@ -108,7 +103,7 @@ useEffect(() => {
             },
           }}
         >
-          <List sx={{top:50}}>
+          <List sx={{ top: 50 }}>
             <ListItem
               button
               onClick={() => handleSidebarClick("profile")}
@@ -186,7 +181,6 @@ useEffect(() => {
           </List>
         </Drawer>
 
-        {/* Main Content */}
         <Box
           component="main"
           sx={{
@@ -197,8 +191,8 @@ useEffect(() => {
         >
           <Container maxWidth="md">
             {activeComponent === "profile" && <PatientDetails userData={userData} />}
-            {activeComponent === "book-appointment" && <BookAppointment />}
-            {activeComponent === "view-appointments" && <ViewAppointments />}
+            {activeComponent === "book-appointment" && <BookAppointment patientEmail={userData.email} />}
+            {activeComponent === "view-appointments" && <ViewAppointments patientEmail={userData.email} />}
             {activeComponent === "medical-history" && <MedicalHistory />}
             {activeComponent === "prescriptions" && <Prescriptions />}
           </Container>

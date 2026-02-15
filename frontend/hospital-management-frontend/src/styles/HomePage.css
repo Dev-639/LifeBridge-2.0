@@ -39,6 +39,7 @@ body {
   
   .hero {
     background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQX42f-jh-x4pKISBO8kJxrQ7vbbCWQ4iV8Mw&s');
+    opacity: 50%;
     color: white;
     height: 400px; /* You can adjust this value as needed */
     display: flex;

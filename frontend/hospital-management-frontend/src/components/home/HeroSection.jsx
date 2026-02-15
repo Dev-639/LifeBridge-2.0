@@ -11,23 +11,23 @@ function HeroSection() {
       transition={{ duration: 1 }}
     >
       <Box
-         sx={{
-           backgroundImage: `url(${process.env.PUBLIC_URL}/assets/images/Hero.jpeg)`,
-           backgroundSize: 'cover',
-           backgroundPosition: 'center',
-           backgroundRepeat: 'no-repeat',
-           height: '100vh',
-           display: 'flex',
-           alignItems: 'center',
-           justifyContent: 'center',
-           
-         }}
-       
+        sx={{
+          backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.4)), url(${process.env.PUBLIC_URL}/assets/images/Hero.jpeg)`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          height: '100vh',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          opacity: 1,
+        }}
+
       >
         <Container>
           <Typography
             variant="h2"
-            color="white"
+            color="#0B3C5D"
             gutterBottom
             sx={{ fontWeight: 'bold', textAlign: 'center' }}
           >
@@ -35,7 +35,7 @@ function HeroSection() {
           </Typography>
           <Typography
             variant="h6"
-            color="white"
+            color="#0B3C5D"
             sx={{ textAlign: 'center', mb: 3 }}
           >
             Manage your hospital records efficiently and securely.

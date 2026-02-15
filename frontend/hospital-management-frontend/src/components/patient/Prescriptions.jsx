@@ -5,7 +5,6 @@ const Prescriptions = () => {
   return (
     <Box sx={{ p: 3 }}>
       <Typography variant="h5">Prescriptions</Typography>
-      {/* Add your prescriptions details here */}
     </Box>
   );
 };

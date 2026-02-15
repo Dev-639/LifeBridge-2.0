@@ -21,22 +21,20 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
 	@Override
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-	    com.hospital.entity.User user = userRepository.findByEmail(email.toLowerCase())
-	            .orElseThrow(() -> {
-	                logger.error("User not found with email: {}", email);
-	                return new UsernameNotFoundException("User not found");
-	            });
+		com.hospital.entity.User user = userRepository.findByEmail(email.toLowerCase())
+				.orElseThrow(() -> {
+					logger.error("User not found with email: {}", email);
+					return new UsernameNotFoundException("User not found");
+				});
 
-	    UserBuilder builder = org.springframework.security.core.userdetails.User.withUsername(user.getEmail());
-	    builder.password(user.getPassword());
+		UserBuilder builder = org.springframework.security.core.userdetails.User.withUsername(user.getEmail());
+		builder.password(user.getPassword());
 
-	    // Add ROLE_ prefix to roles for authorities
-	    String prefixedRole = "ROLE_" + user.getRole().toString().toUpperCase();
-	    builder.authorities(prefixedRole);
+		String prefixedRole = "ROLE_" + user.getRole().toString().toUpperCase();
+		builder.authorities(prefixedRole);
 
-	    logger.debug("User details successfully built for authentication with role: {}", prefixedRole);
-	    return builder.build();
+		logger.debug("User details successfully built for authentication with role: {}", prefixedRole);
+		return builder.build();
 	}
-
 
 }

@@ -1,29 +1,29 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Box, 
-  Typography, 
-  TextField, 
-  Button, 
-  Grid, 
-  MenuItem, 
+import {
+  Box,
+  Typography,
+  TextField,
+  Button,
+  Grid,
+  MenuItem,
   FormControl,
   InputLabel,
   Select,
   Alert,
-  CircularProgress 
+  CircularProgress
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { useNavigate } from 'react-router-dom';
+import { bookAppointment } from '../../services/appointmentService';
+import { fetchAllDoctors } from '../../services/doctorService';
 
-const BookAppointment = () => {
+const BookAppointment = ({ patientEmail }) => {
   const [doctors, setDoctors] = useState([]);
   const [timeSlots, setTimeSlots] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     doctorId: '',
@@ -38,13 +38,10 @@ const BookAppointment = () => {
 
   const fetchDoctors = async () => {
     try {
-      const mockDoctors = [
-        { id: 1, firstName: 'John', lastName: 'Doe', specialization: 'Cardiologist' },
-        { id: 2, firstName: 'Jane', lastName: 'Smith', specialization: 'Dermatologist' },
-        { id: 3, firstName: 'Alice', lastName: 'Brown', specialization: 'Orthopedic' },
-      ];
-      setDoctors(mockDoctors);
+      const response = await fetchAllDoctors();
+      setDoctors(response);
     } catch (err) {
+      console.error("Error fetching doctors:", err);
       setError('Failed to fetch doctors');
     }
   };
@@ -70,14 +67,23 @@ const BookAppointment = () => {
     setSuccess('');
 
     try {
-      // Mock success response
-      const response = { data: { success: true } }; 
-      if (!response) {
-        throw new Error('Failed to book appointment');
-      }
+      const appointmentData = {
+        doctorId: formData.doctorId,
+        patientEmail: patientEmail,
+        appointmentDate: formData.appointmentDate,
+        appointmentTime: formData.timeSlot,
+        reason: formData.reason
+      };
+
+      await bookAppointment(appointmentData);
       setSuccess('Appointment booked successfully!');
       setTimeout(() => {
-        navigate('/view-appointments');
+        setFormData({
+          doctorId: '',
+          appointmentDate: null,
+          timeSlot: '',
+          reason: '',
+        });
       }, 2000);
     } catch (err) {
       setError(err?.response?.data?.message || 'Failed to book appointment');
@@ -105,11 +111,15 @@ const BookAppointment = () => {
                 onChange={(e) => setFormData({ ...formData, doctorId: e.target.value })}
                 required
               >
-                {doctors.map((doctor) => (
-                  <MenuItem key={doctor.id} value={doctor.id}>
-                    Dr. {doctor.firstName} {doctor.lastName} - {doctor.specialization}
-                  </MenuItem>
-                ))}
+                {doctors.length > 0 ? (
+                  doctors.map((doctor) => (
+                    <MenuItem key={doctor.id} value={doctor.id}>
+                      Dr. {doctor.firstName} {doctor.lastName} - {doctor.specialization}
+                    </MenuItem>
+                  ))
+                ) : (
+                  <MenuItem disabled>No doctors available</MenuItem>
+                )}
               </Select>
             </FormControl>
           </Grid>

@@ -18,8 +18,6 @@ import com.hospital.service.AdminService;
 public class AdminController {
 
 	private static final Logger logger = LoggerFactory.getLogger(AdminController.class);
-	
-	
 
 	@Autowired
 	private AdminService adminService;
@@ -29,7 +27,7 @@ public class AdminController {
 
 	private String extractEmailFromToken(String token) {
 		if (token.startsWith("Bearer ")) {
-			token = token.substring(7); // Remove "Bearer " prefix
+			token = token.substring(7);
 		}
 		return jwtUtil.extractUsername(token);
 	}
@@ -58,6 +56,5 @@ public class AdminController {
 			return ResponseEntity.notFound().build();
 		}
 	}
-	
-	
+
 }

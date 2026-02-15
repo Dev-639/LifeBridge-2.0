@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   AppBar,
   Box,
@@ -17,15 +17,15 @@ import {
   Assignment,
   Settings,
 } from "@mui/icons-material";
-import ViewPatientTable from "../components/tables/ViewPatientTable"; // Patient Table Component
-import ViewDoctorTable from "../components/tables/ViewDoctorTable"; // Placeholder
-import ViewStaffTable from "../components/tables/ViewStaffTable"; // Placeholder
-import ViewNuresTable from "../components/tables/ViewNursesTable"; // Placeholder
-import ViewDepartmentTable from "../components/tables/ViewDepartmentTable"; // Placeholder
-import ViewLablotryTable from "../components/tables/ViewLablotryTable"; // Placeholder
-import ViewAppointmentTable from "../components/tables/ViewAppointmentTable"; // Placeholder
-import ViewPatientAdmitTable from "../components/tables/ViewPatientAdmitTable"; // Placeholder
-import SettingsComponent from "../components/admin/Settings"; // Settings Component
+import ViewPatientTable from "../components/tables/ViewPatientTable";
+import ViewDoctorTable from "../components/tables/ViewDoctorTable";
+import ViewStaffTable from "../components/tables/ViewStaffTable";
+import ViewNuresTable from "../components/tables/ViewNursesTable";
+import ViewDepartmentTable from "../components/tables/ViewDepartmentTable";
+import ViewLablotryTable from "../components/tables/ViewLablotryTable";
+import ViewAppointmentTable from "../components/tables/ViewAppointmentTable";
+import ViewPatientAdmitTable from "../components/tables/ViewPatientAdmitTable";
+import SettingsComponent from "../components/admin/Settings";
 import LogoutButton from "./LogoutButton";
 import { useNavigate } from "react-router-dom";
 import { fetchAdminData } from "../services/adminService";
@@ -37,8 +37,7 @@ function AdminProfile() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  // Fetch admin data
-  const getAdminData = async () => {
+  const getAdminData = useCallback(async () => {
     try {
       const data = await fetchAdminData();
       setUserData(data);
@@ -49,11 +48,11 @@ function AdminProfile() {
       sessionStorage.clear();
       navigate("/login");
     }
-  };
+  }, [navigate]);
 
   useEffect(() => {
     getAdminData();
-  }, []);
+  }, [getAdminData]);
 
   const handleSidebarClick = (component) => {
     setActiveComponent(component);
@@ -65,7 +64,6 @@ function AdminProfile() {
   return (
     <div>
       <CssBaseline />
-      {/* Top Navbar */}
       <AppBar position="sticky">
         <Toolbar>
           <Typography variant="h6" sx={{ flexGrow: 1 }}>
@@ -91,9 +89,7 @@ function AdminProfile() {
         </Toolbar>
       </AppBar>
 
-      {/* Sidebar and Main Content Layout */}
       <Box sx={{ display: "flex" }}>
-        {/* Sidebar */}
         <Drawer
           variant="permanent"
           sx={{
@@ -155,7 +151,6 @@ function AdminProfile() {
           </List>
         </Drawer>
 
-        {/* Main Content */}
         <Box
           component="main"
           sx={{

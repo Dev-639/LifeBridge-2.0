@@ -18,7 +18,7 @@ import {
   Lock,
   Email,
 } from "@mui/icons-material";
-import { loginUser } from "../services/authService"; // Ensure the correct path is used
+import { loginUser } from "../services/authService";
 import "../styles/LoginPage.css";
 import isTokenExpired from "../utils/isTokenExpired";
 
@@ -31,9 +31,8 @@ function LoginPage() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setMessage(""); // Clear previous messages
+    setMessage("");
 
-    // Check if email and password are provided
     if (!email || !password) {
       setMessage("Please enter both email and password.");
       return;
@@ -41,7 +40,6 @@ function LoginPage() {
 
     const credentials = { email, password };
     try {
-      // Send login request to the backend
       const response = await loginUser(credentials);
       console.log("Login response:", response);
       if (isTokenExpired(response.token)) {
@@ -49,18 +47,15 @@ function LoginPage() {
         return;
       }
 
-      // Check if the response is valid
       if (!response || !response.token) {
         setMessage("Invalid response from server. Please try again.");
         return;
       }
 
-      // Store the token in sessionStorage
       sessionStorage.setItem("token", response.token);
 
       console.log("Login successful:", response);
 
-      // Role-based navigation using a dictionary
       const roleRoutes = {
         ROLE_PATIENT: "/patient/profile",
         ROLE_ADMIN: "/admin/profile",
@@ -69,10 +64,8 @@ function LoginPage() {
         ROLE_STAFF: "/staff/profile",
       };
 
-      // Get the route based on the user's role
       const route = roleRoutes[response.role];
 
-      // Navigate to the appropriate dashboard
       if (route) {
         navigate(route);
       } else {
@@ -186,7 +179,10 @@ function LoginPage() {
             Home
           </Button>
           <Button component={Link} to="/register" color="secondary">
-            Register
+            Register as Patient
+          </Button>
+          <Button component={Link} to="/register-doctor" color="secondary">
+            Register as Doctor
           </Button>
           <Button component={Link} to="/forgot-password" color="secondary">
             Forgot Password?

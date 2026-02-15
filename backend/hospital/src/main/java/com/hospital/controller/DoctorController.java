@@ -30,7 +30,7 @@ public class DoctorController {
 	private DoctorService doctorService;
 
 	@Autowired
-	private  SecurityUtil securityUtil;
+	private SecurityUtil securityUtil;
 
 	@PostMapping("/registerDoctor")
 	public ResponseEntity<?> registerDoctor(@Valid @RequestBody DoctorRequest request) {
@@ -50,10 +50,8 @@ public class DoctorController {
 	public ResponseEntity<?> getAllDoctors() {
 		try {
 			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-			if (!securityUtil.isAdmin(authentication)) {
-				return ResponseEntity.status(HttpStatus.FORBIDDEN)
-						.body("Access denied. Only administrators can access this resource.");
+			if (authentication == null || !authentication.isAuthenticated()) {
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authentication required");
 			}
 
 			List<DoctorResponse> doctorResponses = doctorService.fetchAllDoctors();

@@ -8,16 +8,9 @@ import { Box } from '@mui/material';
 function HomePage() {
   return (
     <Box>
-      {/* Navigation Bar */}
       <Navbar />
-
-      {/* Hero Section */}
       <HeroSection />
-
-      {/* Features Section */}
       <FeaturesSection />
-
-      {/* Footer */}
       <Footer />
     </Box>
   );

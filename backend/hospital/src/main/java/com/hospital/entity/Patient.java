@@ -18,7 +18,7 @@ public class Patient {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long patientId;
-    
+
     @Column(name = "user_id", nullable = false)
     private Long userId;
 
@@ -40,20 +40,16 @@ public class Patient {
     @Column(nullable = false)
     private String dateOfBirth;
 
-   
     private String address;
 
-   
     private String city;
 
-    
     private String state;
 
-   
     private String country;
 
     @Column(nullable = false)
-    private String password; // This should be encrypted using BCrypt
+    private String password;
 
     @CreationTimestamp
     private LocalDateTime registrationDate;
@@ -61,4 +57,3 @@ public class Patient {
     @Column(nullable = false)
     private boolean isActive = true;
 }
-

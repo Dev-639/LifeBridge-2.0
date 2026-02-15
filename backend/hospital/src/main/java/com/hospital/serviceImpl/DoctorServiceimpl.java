@@ -33,18 +33,16 @@ public class DoctorServiceimpl implements DoctorService {
 		}
 
 		try {
-			// Step 1: Create User (Authentication Details)
 			User savedUser = userService.createUser(request.getEmail(), request.getPassword(), "DOCTOR");
 
 			Doctor doctor = new Doctor();
 			BeanUtils.copyProperties(request, doctor);
 
-			doctor.setUserId(savedUser.getId()); // Link with userId
+			doctor.setUserId(savedUser.getId());
 			doctor = doctorRepository.save(doctor);
 			return convertToResponse(doctor);
 
 		} catch (EmailAlreadyExistsException ex) {
-			// Handle custom exception for email already registered
 			throw new EmailAlreadyExistsException(
 					"The provided email is already registered. Please use a different email.");
 
@@ -62,23 +60,6 @@ public class DoctorServiceimpl implements DoctorService {
 	public List<DoctorResponse> fetchAllDoctors() {
 		return doctorRepository.findAll().stream().map(this::convertToResponse).collect(Collectors.toList());
 	}
-
-//	public DoctorResponse updateDoctor(String email, DoctorRequest request) {
-//		Doctor doctor = doctorRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("Doctor not found"));
-//
-//		// Update fields
-//		doctor.setFirstName(request.getFirstName());
-//		doctor.setLastName(request.getLastName());
-//		doctor.setPhoneNumber(request.getPhoneNumber());
-//		doctor.setCity(request.getCity());
-//		doctor.setState(request.getState());
-//		doctor.setCountry(request.getCountry());
-//		doctor.setSpecialization(request.getSpecialization());
-//		doctor.setBloodGroup(request.getBloodGroup());
-//
-//		doctor = doctorRepository.save(doctor);
-//		return convertToResponse(doctor);
-//	}
 
 	public boolean deleteDoctor(String email) {
 		Doctor doctor = doctorRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("Doctor not found"));
@@ -111,7 +92,6 @@ public class DoctorServiceimpl implements DoctorService {
 	public DoctorResponse updateDoctor(String email, DoctorResponse request) {
 		Doctor doctor = doctorRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("Doctor not found"));
 
-		// Update fields
 		doctor.setFirstName(request.getFirstName());
 		doctor.setLastName(request.getLastName());
 		doctor.setPhoneNumber(request.getPhoneNumber());

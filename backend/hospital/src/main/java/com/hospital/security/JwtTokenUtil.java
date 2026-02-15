@@ -1,4 +1,4 @@
- package com.hospital.security;
+package com.hospital.security;
 
 import java.security.Key;
 import java.util.Base64;
@@ -18,12 +18,12 @@ import io.jsonwebtoken.security.Keys;
 public class JwtTokenUtil {
     private static final String BASE64_SECRET_KEY = "4MkRBHR5CZKivdaSi2NZH80wZLH92UquPLB8Hthe3iis+KKgOi6Sp5ZcmqXqLOw0E6V4007FX60PiU313fxYng==";
     private final Key secretKey = Keys.hmacShaKeyFor(Base64.getDecoder().decode(BASE64_SECRET_KEY));
-    private static final long JWT_TOKEN_VALIDITY = 24 * 60 * 60 * 1000; // 24 hours
+    private static final long JWT_TOKEN_VALIDITY = 24 * 60 * 60 * 1000;
 
     public String generateToken(UserDetails userDetails, String role) {
         return Jwts.builder()
                 .setSubject(userDetails.getUsername())
-                .claim("role", role) // Store single role as string
+                .claim("role", role)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY))
                 .signWith(secretKey, SignatureAlgorithm.HS512)
@@ -33,7 +33,7 @@ public class JwtTokenUtil {
     public List<String> extractRoles(String token) {
         Claims claims = extractAllClaims(token);
         String role = claims.get("role", String.class);
-        return List.of(role); // Convert single role to List
+        return List.of(role);
     }
 
     public String extractUsername(String token) {

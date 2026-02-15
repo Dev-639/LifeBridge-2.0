@@ -8,7 +8,7 @@ import {
   Card,
   CardMedia,
 } from "@mui/material";
-import { validateForm } from "../../Javascript/validateForm"; // Assuming this function does validation
+import { validateForm } from "../../Javascript/validateForm";
 import { updatePatient } from "../../services/patientService";
 
 const PatientDetails = ({ userData }) => {
@@ -30,7 +30,6 @@ const PatientDetails = ({ userData }) => {
     country: "",
   });
 
-  // Load user data into form
   useEffect(() => {
     if (userData) {
       setFormData({
@@ -48,12 +47,10 @@ const PatientDetails = ({ userData }) => {
     }
   }, [userData]);
 
-  // Handle edit button click
   const handleEditClick = () => {
     setIsEditing(true);
   };
 
-  // Handle cancel button click
   const handleCancelClick = () => {
     setIsEditing(false);
     setFormData({
@@ -71,7 +68,6 @@ const PatientDetails = ({ userData }) => {
     setErrors({}); // Clear errors on cancel
   };
 
-  // Handle form field change
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -80,39 +76,34 @@ const PatientDetails = ({ userData }) => {
     });
   };
 
-  // Handle form submission
   const handleSubmit = async () => {
-    // Validate form data
     const validationErrors = validateForm(formData);
-    setErrors(validationErrors); // Set validation errors
+    setErrors(validationErrors);
 
-    // If validation errors exist, stop submission
     if (Object.keys(validationErrors).length > 0) {
       console.warn("Validation failed:", validationErrors);
       return;
     }
 
-    const previousData = { ...patientData }; // Backup the original data
-    setPatientData(formData); // Optimistically update UI
+    const previousData = { ...patientData };
+    setPatientData(formData);
 
     try {
-      setIsLoading(true); // Show loading indicator
-           
-      // Assume updatePatient is a service to update patient data on the server
+      setIsLoading(true);
+
       const updatedData = await updatePatient(formData.email, formData);
-       if(updatedData)
-      alert("Patient details updated successfully!");
-      setIsEditing(false); // Exit edit mode after successful update
+      if (updatedData)
+        alert("Patient details updated successfully!");
+      setIsEditing(false);
     } catch (error) {
-      setPatientData(previousData); // Rollback data on error
+      setPatientData(previousData);
       console.error("Error during patient update:", error.message);
       alert(`Update failed: ${error.message}`);
     } finally {
-      setIsLoading(false); // Stop loading indicator
+      setIsLoading(false);
     }
   };
 
-  // Update the fields array with disabled property
   const fields = [
     { label: "Patient ID", name: "patientId", disabled: true },
     { label: "First Name", name: "firstName", disabled: false },
@@ -136,7 +127,6 @@ const PatientDetails = ({ userData }) => {
         minHeight: "70vh",
       }}
     >
-      {/* Main Container */}
       <Box
         sx={{
           maxWidth: "800px",
@@ -147,7 +137,6 @@ const PatientDetails = ({ userData }) => {
           padding: 4,
         }}
       >
-        {/* Header Section */}
         <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 4 }}>
           <Typography variant="h5" fontWeight="bold">
             Patient Profile
@@ -170,7 +159,6 @@ const PatientDetails = ({ userData }) => {
           </Card>
         </Box>
 
-        {/* Patient Details Section */}
         <Grid container spacing={2}>
           {fields.map(({ label, name, disabled }) => (
             <Grid item xs={6} key={name}>
@@ -201,7 +189,6 @@ const PatientDetails = ({ userData }) => {
           ))}
         </Grid>
 
-        {/* Action Buttons */}
         <Box sx={{ textAlign: "right", marginTop: 3 }}>
           {!isEditing ? (
             <Button variant="contained" onClick={handleEditClick}>

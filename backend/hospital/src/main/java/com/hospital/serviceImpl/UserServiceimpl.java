@@ -24,7 +24,6 @@ public class UserServiceimpl implements UserService {
 			throw new EmailAlreadyExistsException("Email is already registered");
 		}
 
-		// Using Builder pattern to create the User object
 		User user = User.builder().email(email).password(passwordEncoder.encode(password)).role(role).isActive(true)
 				.build();
 
