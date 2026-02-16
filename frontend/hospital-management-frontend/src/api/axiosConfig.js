@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:8080/hospital/",
+  baseURL: "https://lifebridge-2-0.onrender.com/hospital/",
   headers: {
     "Content-Type": "application/json",
     Accept: "application/json",
