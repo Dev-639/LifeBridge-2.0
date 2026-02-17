@@ -13,7 +13,7 @@ import StaffProfile from './pages/StaffProfile';
 
 function App() {
   return (
-    <Router basename="/LifeBridgeHospital">
+    <Router>
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />

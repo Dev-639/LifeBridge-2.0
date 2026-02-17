@@ -43,7 +43,7 @@ function PatientProfile() {
       console.error("Error fetching patient data:", err);
       setError("Failed to load patient data. Please log in again.");
       sessionStorage.clear();
-      navigate("/LifeBridgeHospital/login");
+      navigate("/login");
     }
   }, [navigate]);
 
