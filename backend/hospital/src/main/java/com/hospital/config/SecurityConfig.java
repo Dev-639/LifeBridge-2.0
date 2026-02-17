@@ -1,6 +1,7 @@
 package com.hospital.config;
 
 import java.util.Arrays;
+import org.springframework.http.HttpMethod;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -38,6 +39,7 @@ public class SecurityConfig {
 		http.csrf(csrf -> csrf.disable()).cors(cors -> cors.configurationSource(corsConfigurationSource()))
 				.authorizeHttpRequests(authorizeRequests -> {
 					authorizeRequests
+							.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 							.requestMatchers("/", "/hospital/**", "/home", "/api/patients/register",
 									"/api/doctors/registerDoctor", "/api/login")
 							.permitAll().requestMatchers("/api/admin/**").hasAuthority("ROLE_ADMIN")
@@ -86,7 +88,7 @@ public class SecurityConfig {
 		CorsConfiguration configuration = new CorsConfiguration();
 		configuration.setAllowedOriginPatterns(Arrays.asList("*"));
 		configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-		configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Accept"));
+		configuration.setAllowedHeaders(Arrays.asList("*"));
 		configuration.setAllowCredentials(true);
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		source.registerCorsConfiguration("/**", configuration);
