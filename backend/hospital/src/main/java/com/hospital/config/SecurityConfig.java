@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -36,29 +36,30 @@ public class SecurityConfig {
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-		http.csrf(csrf -> csrf.disable()).cors(cors -> cors.configurationSource(corsConfigurationSource()))
-				.authorizeHttpRequests(authorizeRequests -> {
-					authorizeRequests
-							.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-							.requestMatchers("/", "/hospital/**", "/home", "/api/patients/register",
-									"/api/doctors/registerDoctor", "/api/login")
-							.permitAll().requestMatchers("/api/admin/**").hasAuthority("ROLE_ADMIN")
-							.requestMatchers("/api/doctors/fetchAllDoctors")
-							.hasAnyAuthority("ROLE_PATIENT", "ROLE_ADMIN", "ROLE_DOCTOR")
-							.requestMatchers("/api/doctors/**").hasAnyAuthority("ROLE_DOCTOR", "ROLE_ADMIN")
-							.requestMatchers("/api/nurse/**").hasAuthority("ROLE_NURSE")
-							.requestMatchers("/api/staff/**").hasAuthority("ROLE_STAFF")
-							.requestMatchers("/api/patients/**").hasAnyAuthority("ROLE_PATIENT", "ROLE_ADMIN")
-							.requestMatchers("/api/appointments/**")
-							.hasAnyAuthority("ROLE_PATIENT", "ROLE_DOCTOR", "ROLE_ADMIN")
-							.anyRequest().authenticated();
-				}).exceptionHandling(
+		http.csrf(csrf -> csrf.disable())
+				.cors(cors -> cors.configurationSource(corsConfigurationSource()))
+				.authorizeHttpRequests(authorizeRequests -> authorizeRequests
+						.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+						.requestMatchers("/", "/hospital/**", "/home", "/api/patients/register",
+								"/api/doctors/registerDoctor", "/api/login")
+						.permitAll().requestMatchers("/api/admin/**").hasAuthority("ROLE_ADMIN")
+						.requestMatchers("/api/doctors/fetchAllDoctors")
+						.hasAnyAuthority("ROLE_PATIENT", "ROLE_ADMIN", "ROLE_DOCTOR")
+						.requestMatchers("/api/doctors/**").hasAnyAuthority("ROLE_DOCTOR", "ROLE_ADMIN")
+						.requestMatchers("/api/nurse/**").hasAuthority("ROLE_NURSE")
+						.requestMatchers("/api/staff/**").hasAuthority("ROLE_STAFF")
+						.requestMatchers("/api/patients/**").hasAnyAuthority("ROLE_PATIENT", "ROLE_ADMIN")
+						.requestMatchers("/api/appointments/**")
+						.hasAnyAuthority("ROLE_PATIENT", "ROLE_DOCTOR", "ROLE_ADMIN")
+						.anyRequest().authenticated())
+				.exceptionHandling(
 						exception -> exception.authenticationEntryPoint((request, response, authException) -> {
 							response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 							response.setContentType("application/json");
 							response.getWriter().write("{\"error\": \"" + authException.getMessage() + "\"}");
 						}))
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+				.authenticationProvider(authenticationProvider())
 				.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
 		return http.build();
@@ -78,18 +79,17 @@ public class SecurityConfig {
 	}
 
 	@Bean
-	public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
-		return http.getSharedObject(AuthenticationManagerBuilder.class).userDetailsService(detailsServiceImpl)
-				.passwordEncoder(passwordEncoder()).and().build();
+	public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+		return config.getAuthenticationManager();
 	}
 
 	@Bean
 	public CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration configuration = new CorsConfiguration();
+		configuration.setAllowCredentials(true);
 		configuration.setAllowedOriginPatterns(Arrays.asList("*"));
 		configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
 		configuration.setAllowedHeaders(Arrays.asList("*"));
-		configuration.setAllowCredentials(true);
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		source.registerCorsConfiguration("/**", configuration);
 		return source;
